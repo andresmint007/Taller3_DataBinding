@@ -2,28 +2,28 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 
 function Grafico() {
-  const svgMapRef = useRef(null); // Referencia para el mapa
+  const svgMapRef = useRef(null); 
   const svgRadialRef = useRef(null);
-  const svgMunicipalitiesRef = useRef(null); // Referencia para el mapa de municipios
-  const tooltipRef = useRef(null); // Referencia para el tooltip
-  const [departmentsData, setDepartmentsData] = useState(null); // Estado para almacenar el GeoJSON de departamentos
-  const [selectedYear, setSelectedYear] = useState('2020'); // Año inicial por defecto
-  const [selectedMonth, setSelectedMonth] = useState('12'); // Mes inicial por defecto
+  const svgMunicipalitiesRef = useRef(null);
+  const tooltipRef = useRef(null); 
+  const [departmentsData, setDepartmentsData] = useState(null); 
+  const [selectedYear, setSelectedYear] = useState('2020'); 
+  const [selectedMonth, setSelectedMonth] = useState('12');
   const [selectedMunicipio, setSelectedMunicipio] = useState(null);
   const [selectedMunicipioName, setSelectedMunicipioName] = useState(null);
-  const [municipalitiesData, setMunicipalitiesData] = useState(null); // Estado para almacenar el GeoJSON de municipios
-  const [educationData, setEducationData] = useState([]); // Estado para almacenar los datos de educación
-  const [selectedDepartment, setSelectedDepartment] = useState(null); // Estado para el departamento seleccionado
-  const [selectedDepartmentName, setSelectedDepartmentName] = useState(null); // Estado para el departamento seleccionado
+  const [municipalitiesData, setMunicipalitiesData] = useState(null); 
+  const [educationData, setEducationData] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState(null); 
+  const [selectedDepartmentName, setSelectedDepartmentName] = useState(null); 
 
   const [educationCompleteData, setEducationCompleteData] = useState([]);
-  const [selectedMunicipalitiesData, setSelectedMunicipalitiesData] = useState(null); // Estado para almacenar los municipios del departamento seleccionado
+  const [selectedMunicipalitiesData, setSelectedMunicipalitiesData] = useState(null);
   const [indicadoresUnicos, setIndicadoresUnicos] = useState([]);
   const [years, setYears] = useState([]);
   const [months, setMonths] = useState([]);
-  const legendRef = useRef(null); // Referencia para la leyenda
-  const legendRefRadial = useRef(null); // Referencia para la leyenda
-  const svgLineRef = useRef(null); // Nueva referencia para el gráfico de líneas
+  const legendRef = useRef(null); 
+  const legendRefRadial = useRef(null);
+  const svgLineRef = useRef(null); 
 
 
 
@@ -168,8 +168,8 @@ function Grafico() {
             +municipality.properties.DPTO_CCDGO === departmentCode
           );
           setSelectedMunicipalitiesData({ type: 'FeatureCollection', features: municipalitiesInDepartment }); 
-          const svgRadial = d3.select(svgRadialRef.current); // Selecciona tu SVG
-          const svgchart = d3.select(svgLineRef.current); // Selecciona tu SVG
+          const svgRadial = d3.select(svgRadialRef.current); 
+          const svgchart = d3.select(svgLineRef.current);
           const legendRef = d3.select(legendRefRadial.current);
           svgRadial.selectAll("*").remove();
           svgchart.selectAll("*").remove();
@@ -204,7 +204,6 @@ function Grafico() {
         .attr('height', legendHeight)
         .style('fill', 'url(#legend-gradient)');
 
-      // Agregar texto de leyenda
       legendSvg.append('text')
         .attr('x', 0)
         .attr('y', 50)
@@ -222,7 +221,6 @@ function Grafico() {
         .attr('y', 50)
         .style('text-anchor', 'middle')
         .text("Calidad de Educación");
-        // Crear el tooltip
       const tooltip = d3.select(tooltipRef.current)
       .style('position', 'absolute')
       .style('visibility', 'hidden')
@@ -267,8 +265,8 @@ function Grafico() {
 useEffect(() => {
     if (selectedMunicipalitiesData) {
       const svgMunicipalities = d3.select(svgMunicipalitiesRef.current);
-      const width = 400; // Ancho del mapa de municipios
-      const height = 400; // Alto del mapa de municipios
+      const width = 400; 
+      const height = 400; 
       svgMunicipalities.attr('width', width).attr('height', height);
   
       const projection = d3.geoMercator().fitSize([width, height], selectedMunicipalitiesData);
@@ -290,11 +288,9 @@ useEffect(() => {
         .domain([minValue, maxValue])
         .range(['red', 'green']);
   
-      // Join para crear y actualizar los elementos del SVG
       const paths = svgMunicipalities.selectAll('path')
-        .data(selectedMunicipalitiesData.features, d => d.properties.MPIO_CDPMP); // Clave única por municipio
+        .data(selectedMunicipalitiesData.features, d => d.properties.MPIO_CDPMP); 
   
-      // Enter: Crear nuevos elementos
       paths.enter()
         .append('path')
         .attr('d', pathGenerator)
@@ -307,29 +303,28 @@ useEffect(() => {
         .on('click', (event, d) => {
             const municipalityCode2 = +d.properties.MPIO_CDPMP;
             const municiplatyName= d.properties.MPIO_CNMBR
-            setSelectedMunicipio(municipalityCode2); // Actualiza el municipio seleccionado
+            setSelectedMunicipio(municipalityCode2);
             setSelectedMunicipioName(municiplatyName.charAt(0).toUpperCase() + municiplatyName.slice(1).toLowerCase())
           })
         .on('mouseenter', (event, d) => {
-          const municipalityName = d.properties.MPIO_CNMBR; // Asegúrate de que este campo esté en tus datos
+          const municipalityName = d.properties.MPIO_CNMBR;
           tooltipRef.current.innerHTML = municipalityName;
           tooltipRef.current.style.visibility = 'visible';
-          tooltipRef.current.style.left = `${event.pageX + 5}px`; // Ajusta la posición
-          tooltipRef.current.style.top = `${event.pageY + 5}px`; // Ajusta la posición
+          tooltipRef.current.style.left = `${event.pageX + 5}px`; 
+          tooltipRef.current.style.top = `${event.pageY + 5}px`; 
         })
         .on('mousemove', (event) => {
-          tooltipRef.current.style.left = `${event.pageX + 5}px`; // Mueve el tooltip con el mouse
-          tooltipRef.current.style.top = `${event.pageY + 5}px`; // Mueve el tooltip con el mouse
+          tooltipRef.current.style.left = `${event.pageX + 5}px`; 
+          tooltipRef.current.style.top = `${event.pageY + 5}px`; 
         })
         .on('mouseleave', () => {
-          tooltipRef.current.style.visibility = 'hidden'; // Oculta el tooltip
+          tooltipRef.current.style.visibility = 'hidden'; 
         })
-        .transition() // Transición al entrar
+        .transition()
         .duration(800)
         .attr('fill-opacity', 0.7);
   
-      // Update: Actualizar elementos existentes
-      paths.transition() // Transición para actualizar
+      paths.transition() 
         .duration(800)
         .attr('d', pathGenerator)
         .attr('fill', d => {
@@ -338,12 +333,11 @@ useEffect(() => {
           return value ? colorScale(value) : 'lightgrey';
         });
   
-      // Exit: Eliminar elementos que ya no están en el nuevo conjunto de datos
       paths.exit()
-        .transition() // Transición al salir
+        .transition()
         .duration(300)
         .attr('fill-opacity', 0)
-        .remove(); // Eliminar el elemento después de la transición
+        .remove(); 
     }
   }, [selectedMunicipio,selectedMunicipalitiesData, educationData]);
 //Dibujar grafico Radial
@@ -356,37 +350,36 @@ useEffect(() => {
   
       const radius = Math.min(width, height) / 2 - 40;
   
-      // Filtrar y ordenar los datos
       const indicatorsData = educationCompleteData.filter(d =>
         d['CodigoEntidad'] === selectedMunicipio &&
         d['Anio'] === selectedYear &&
         d['Mes'] === selectedMonth
-      ).sort((a, b) => b.DatoNumerico - a.DatoNumerico); // Ordenar de mayor a menor
+      ).sort((a, b) => b.DatoNumerico - a.DatoNumerico); 
   
   
       const uniqueIndicators = indicatorsData.map(d => d.Indicador);
   
-      // Define un conjunto de colores
+     
       const colorScale = d3.scaleOrdinal()
         .domain(uniqueIndicators)
-        .range(d3.schemeCategory10); // Cambia a un conjunto de colores que prefieras
+        .range(d3.schemeCategory10); 
   
       const angleScale = d3.scaleBand()
         .domain(uniqueIndicators)
         .range([0, 2 * Math.PI]);
   
       const valueScale = d3.scaleLinear()
-        .domain([0, 100]) // Asumiendo que 'Dato Numérico' está entre 0 y 100
+        .domain([0, 100]) 
         .range([0, radius]);
   
       const arc = d3.arc()
         .innerRadius(0)
-        .outerRadius(d => valueScale(Number(d.DatoNumerico))) // Asegúrate de convertir a número
+        .outerRadius(d => valueScale(Number(d.DatoNumerico))) 
         .startAngle(d => angleScale(d.Indicador))
         .endAngle(d => angleScale(d.Indicador) + angleScale.bandwidth());
   
       // Crear el tooltip
-      const tooltip = d3.select('#tooltip') // Asegúrate de tener un div con id='tooltip'
+      const tooltip = d3.select('#tooltip') 
         .style('position', 'absolute')
         .style('visibility', 'hidden')
         .style('background', 'lightgrey')
@@ -398,11 +391,11 @@ useEffect(() => {
         .join('path')
         .attr('d', arc)
         .attr('transform', `translate(${width / 2}, ${height / 2})`)
-        .attr('fill', d => colorScale(d.Indicador)) // Usar colorScale
+        .attr('fill', d => colorScale(d.Indicador))
         .attr('stroke', 'black')
         .attr('opacity', 0.7)
         .on('mouseenter', (event, d) => {
-          tooltip.html(`Indicador: ${d.DatoNumerico}`) // Mostrar dato en el tooltip
+          tooltip.html(`Indicador: ${d.DatoNumerico}`) 
             .style('visibility', 'visible');
           d3.select(event.target)
             .attr('fill', 'orange')
@@ -412,7 +405,6 @@ useEffect(() => {
           tooltip.style('top', (event.pageY + 5) + 'px')
             .style('left', (event.pageX + 5) + 'px');
         })
-        //agregar aca on click-Dan
         .on('mouseleave', (event) => {
           tooltip.style('visibility', 'hidden');
           d3.select(event.target)
@@ -420,9 +412,8 @@ useEffect(() => {
             .attr('opacity', 0.7);
         });
   
-      // Crear la leyenda
       const legend = d3.select(legendRefRadial.current);
-      legend.selectAll('*').remove(); // Limpiar leyenda antes de agregar
+      legend.selectAll('*').remove(); 
   
       uniqueIndicators.forEach((indicator) => {
         const legendRow = legend.append('div')

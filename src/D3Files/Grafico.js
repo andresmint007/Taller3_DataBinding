@@ -241,7 +241,7 @@ function Grafico() {
       })
       .attr('stroke', 'black')
       .on('mouseover', (event, d) => {
-        const departmentName = d.properties.DPTO_CNMBR; // Asume que este es el campo con el nombre
+        const departmentName = d.properties.DPTO_CNMBR; 
         tooltip.html(departmentName)
           .style('top', (event.pageY + 5) + 'px')
           .style('left', (event.pageX + 5) + 'px')
@@ -378,7 +378,6 @@ useEffect(() => {
         .startAngle(d => angleScale(d.Indicador))
         .endAngle(d => angleScale(d.Indicador) + angleScale.bandwidth());
   
-      // Crear el tooltip
       const tooltip = d3.select('#tooltip') 
         .style('position', 'absolute')
         .style('visibility', 'hidden')

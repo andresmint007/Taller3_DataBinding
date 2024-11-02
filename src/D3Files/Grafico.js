@@ -168,7 +168,12 @@ function Grafico() {
             +municipality.properties.DPTO_CCDGO === departmentCode
           );
           setSelectedMunicipalitiesData({ type: 'FeatureCollection', features: municipalitiesInDepartment }); 
-
+          const svgRadial = d3.select(svgRadialRef.current); // Selecciona tu SVG
+          const svgchart = d3.select(svgLineRef.current); // Selecciona tu SVG
+          const legendRef = d3.select(legendRefRadial.current);
+          svgRadial.selectAll("*").remove();
+          svgchart.selectAll("*").remove();
+          legendRef.selectAll("*").remove();
         });
         const legendWidth = 300;
       const legendHeight = 20;
@@ -303,7 +308,7 @@ useEffect(() => {
             const municipalityCode2 = +d.properties.MPIO_CDPMP;
             const municiplatyName= d.properties.MPIO_CNMBR
             setSelectedMunicipio(municipalityCode2); // Actualiza el municipio seleccionado
-            setSelectedMunicipioName(municiplatyName)
+            setSelectedMunicipioName(municiplatyName.charAt(0).toUpperCase() + municiplatyName.slice(1).toLowerCase())
           })
         .on('mouseenter', (event, d) => {
           const municipalityName = d.properties.MPIO_CNMBR; // Asegúrate de que este campo esté en tus datos
@@ -591,15 +596,15 @@ useEffect(() => {
             <svg ref={svgMunicipalitiesRef}></svg>
           </div>
           <div style={{ width: '450px', height: '500px', border: '3px solid black', margin: '10px', borderRadius: '20px' }}>
-            <label>Año:</label>
-            <select value={selectedYear} onChange={e => setSelectedYear(e.target.value)}>
+            <label>Año:  </label>
+            <select value={selectedYear} onChange={e => setSelectedYear(e.target.value)}  style={{border: '1px solid #ccc', borderRadius: '5px',fontSize: '16px',backgroundColor: '#f9f9f9',transition: 'border-color 0.3s',outline: 'none',cursor: 'pointer'}} >
               <option value="">Seleccione un año</option>
               {years.map((year, index) => (
                 <option key={index} value={year}>{year}</option>
               ))}
             </select>
-            <label>Mes:</label>
-            <select value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)}>
+            <label>  Mes:  </label>
+            <select value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)} style={{border: '1px solid #ccc', borderRadius: '5px',fontSize: '16px',backgroundColor: '#f9f9f9',transition: 'border-color 0.3s',outline: 'none',cursor: 'pointer'}}>
               <option value="">Seleccione un mes</option>
               {months.map((month, index) => (
                 <option key={index} value={month}>{month}</option>
